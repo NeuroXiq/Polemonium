@@ -1,0 +1,6 @@
+@Polemonium.Api.Web_HostAddress = http://localhost:5193
+
+GET {{Polemonium.Api.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
