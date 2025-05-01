@@ -26,7 +26,7 @@ namespace Program
 
             app.MapControllers();
 
-            pp.Run();
+            app.Run();
         }
     }
 }

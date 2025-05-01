@@ -1,12 +1,3 @@
-console.log('background start');
-
-function googleCreateSpanOutline(tab) {
-
-}
-
-function googleGetAllUrls(tab) {
-
-}
 
 function documentScript() {
     function sGetHostsVotesCache(urls) {
@@ -103,41 +94,4 @@ function documentScript() {
     });
 }
 
-function processTab(tab) {
-    console.log('process tab', tab);
-
-    if (!tab || !tab.url || !tab.url?.startsWith('https://') || tab.status !== 'complete') {
-        return;
-    }
-
-    let host = (new URL(tab.url)).host;
-
-    if (!host.includes('google')) {
-        return;
-    }
-
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['scripts/documentScript.js']
-        // func: documentScript
-    }).then(r => { console.log('end execute script', r); });
-
-    //fetch('https://localhost:7292/api/website/websites-votes')
-
-    //fetch('https://localhost:1234/api/website?q=test.com')
-    //.then(r=> console.log(r));
-}
-
-function onTabUpdated(e) {
-    console.log('tab updated', e);
-    chrome.tabs.query(
-        { /* active: true, currentWindow: true */ },
-        (tabsArray) => processTab(tabsArray?.length > 0 ? tabsArray[0] : null));
-
-    // chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    //     console.log('query tabs');
-    // });
-
-}
-
-chrome.tabs.onUpdated.addListener(onTabUpdated);
+documentScript();
