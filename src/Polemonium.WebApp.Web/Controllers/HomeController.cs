@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Polemonium.Api.Client.Client;
+using Polemonium.Api.Client.Dtos;
 using Polemonium.WebApp.Web.Models;
 using System.Diagnostics;
 
@@ -27,10 +28,17 @@ namespace Polemonium.WebApp.Web.Controllers
         }
 
         [HttpGet, Route("website/{dnsName}")]
-        public IActionResult Website(string dnsName)
+        public async Task<IActionResult> Website(string dnsName)
         {
-            polemoniumApiClient.GetWebsiteDetails(dnsName);
-            return View();
+            var details = await polemoniumApiClient.GetWebsiteDetailsAsync(dnsName);
+            var comments = new List<WebsiteCommentDto>();
+            var model = new WebsiteModel()
+            {
+                Comments = comments,
+                WebsiteDetails = details
+            };
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

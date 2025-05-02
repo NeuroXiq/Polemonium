@@ -10,8 +10,8 @@ namespace Polemonium.Api.Client.Client
 {
     public interface IPolemoniumApiClient
     {
-        Task<WebsiteDetailsDto> GetWebsiteDetails(string dnsName);
-        Task<IList<WebsiteCommentDto>> GetWebsiteComments(int websiteId, int skip, int take);
+        Task<WebsiteDetailsDto> GetWebsiteDetailsAsync(string dnsName);
+        Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(int websiteId, int skip, int take);
     }
 
     public class PolemoniumApiClient : IPolemoniumApiClient
@@ -24,12 +24,12 @@ namespace Polemonium.Api.Client.Client
             httpClient.BaseAddress = new Uri(apiUrl);
         }
 
-        public async Task<IList<WebsiteCommentDto>> GetWebsiteComments(int websiteId, int skip, int take)
+        public async Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(int websiteId, int skip, int take)
         {
             return null;
         }
 
-        public async Task<WebsiteDetailsDto> GetWebsiteDetails(string dnsName)
+        public async Task<WebsiteDetailsDto> GetWebsiteDetailsAsync(string dnsName)
         {
             return new WebsiteDetailsDto
             {

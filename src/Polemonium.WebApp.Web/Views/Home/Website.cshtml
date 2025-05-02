@@ -1,8 +1,30 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model WebsiteModel
+@{
+    ViewData["Title"] = $"Page Rating {Model.WebsiteDetails.DnsName}";
+    var website = Model.WebsiteDetails;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="website">
+    <h1 class="title">@website.DnsName</h1>
+    <div class="votes">
+        <div class="votes-up">
+            <img src="/img/thumb-up.svg" />
+            @website.VoteUpCount
+        </div>
+        <div class="votes-down">
+            @website.VoteDownCount
+        </div>
+    </div>
+    <h3>Comments</h3>
+    <div class="comments-list">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <div class="top">
+                    @comment.CreatedOn
+                </div>
+                <p class="content">@comment.Content</p>
+            </div>
+        }
+    </div>
 </div>
