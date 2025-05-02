@@ -7,7 +7,7 @@ created_on timestamp
 create table website_host
 (
 id integer primary key generated always as identity,
-host_dns_name varchar(254) not null
+dns_name varchar(254) not null unique
 );
 
 create table website_host_comment
@@ -27,6 +27,6 @@ website_host_id integer not null references website_host(id),
 vote character(1) not null
 );
 
-create index on website_host(host_dns_name);
+create index on website_host(dns_name);
 create index on website_host_comment(website_host_id);
 create index on website_host_vote(website_host_id);

@@ -1,0 +1,3 @@
+1. add transactions to services
+2. protect tokens issue e.g. by ip (to forbid to many tokens for single ip)
+3. make rate limits

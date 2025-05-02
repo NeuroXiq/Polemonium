@@ -1,6 +1,6 @@
 ﻿using Polemonium.Api.Web.Domain.Services;
 
-namespace Polemonium.Api.Web.Common
+namespace Polemonium.Api.Web.Application
 {
     public class CurrentUser : ICurrentUser
     {

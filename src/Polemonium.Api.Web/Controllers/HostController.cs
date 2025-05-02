@@ -22,9 +22,11 @@ namespace Polemonium.Api.Web.Controllers
         }
 
         [HttpPut, Route("set-vote"), Authorize]
-        public async Task SetVote(SetVoteModel model)
+        public async Task<object> SetVote(SetVoteModel model)
         {
             await hostService.SetVote(model.Host, (Domain.Enums.HostVoteType)model.Vote);
+
+            return null;
         }
 
         [HttpGet, Route("votes")]
@@ -41,7 +43,7 @@ namespace Polemonium.Api.Web.Controllers
 
             var r = new Random();
 
-            return hosts.Select(t => new HostVoteDto { Host = t, VoteDownCount = r.Next(100), VoteUpCount = r.Next(100) }).ToList();
+            return hosts.Select(t => new HostVoteDto { DnsName = t, VoteDownCount = r.Next(100), VoteUpCount = r.Next(100) }).ToList();
         }
     }
 }

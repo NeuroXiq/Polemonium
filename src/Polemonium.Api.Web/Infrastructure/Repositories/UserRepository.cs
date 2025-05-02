@@ -1,4 +1,5 @@
-﻿using Polemonium.Api.Web.Domain.Entities;
+﻿using Dapper;
+using Polemonium.Api.Web.Domain.Entities;
 using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Infrastructure.Shared;
 using System;
@@ -14,9 +15,9 @@ namespace Polemonium.Api.Web.Infrastructure.Repositories
 
         public async Task CreateUser(AppUser user)
         {
-            // throw new System.NotImplementedException();
-
-            // return new AppUser() { Id = 5, CreatedOn = DateTime.UtcNow };
+            user.Id = await Connection.ExecuteScalarAsync<int>(
+                "INSERT INTO app_user(created_on) VALUES (@CreatedOn) RETURNING id",
+                user);
         }
     }
 }

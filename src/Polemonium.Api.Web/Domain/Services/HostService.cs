@@ -1,4 +1,5 @@
 ﻿using Polemonium.Api.Web.Common;
+using Polemonium.Api.Web.Domain.Entities;
 using Polemonium.Api.Web.Domain.Enums;
 using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Infrastructure.Repositories;
@@ -18,10 +19,12 @@ namespace Polemonium.Api.Web.Domain.Services
     public class HostService : IHostService
     {
         private IWebsiteHostRepository hostRepository;
+        private ICurrentUser user;
 
-        public HostService(IWebsiteHostRepository hostRepository)
+        public HostService(IWebsiteHostRepository hostRepository, ICurrentUser user)
         {
             this.hostRepository = hostRepository;
+            this.user = user;
         }
 
         public Task<int> AddComment(string content)
@@ -36,12 +39,31 @@ namespace Polemonium.Api.Web.Domain.Services
 
         public async Task SetVote(string host, HostVoteType vote)
         {
+            host = host?.Trim();
             if (string.IsNullOrWhiteSpace(host) || Uri.CheckHostName(host) == UriHostNameType.Unknown)
             {
                 throw new PValidationException("invalid host name");
             }
 
             if (!Enum.IsDefined(vote)) throw new PValidationException("invalid vote value");
+
+            WebsiteHost websiteHost = await GetOrCreateWebsiteHost(host);
+            WebsiteHostVote hostVote = new WebsiteHostVote(user.UserId, websiteHost.Id, (byte)vote);
+
+            await hostRepository.CreateWebsiteHostVote(hostVote);
+        }
+
+        async Task<WebsiteHost> GetOrCreateWebsiteHost(string dnsName)
+        {
+            WebsiteHost host = await hostRepository.GetByDnsName(dnsName);
+
+            if (host == null)
+            {
+                host = new WebsiteHost(dnsName);
+                await hostRepository.CreateWebsiteHost(host);
+            }
+
+            return host;
         }
 
         public Task UpdateComment()

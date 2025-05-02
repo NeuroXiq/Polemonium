@@ -2,6 +2,13 @@
 {
     public class WebsiteHost : EntityBase
     {
-        public string HostDnsName { get; set; }
+        public string DnsName { get; set; }
+
+        public WebsiteHost() { }
+
+        public WebsiteHost(string dnsName)
+        {
+            DnsName = dnsName;
+        }
     }
 }

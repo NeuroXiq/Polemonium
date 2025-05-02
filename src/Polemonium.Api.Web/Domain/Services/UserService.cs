@@ -23,8 +23,7 @@ namespace Polemonium.Api.Web.Domain.Services
             var appUser = new AppUser();
             appUser.CreatedOn = DateTime.UtcNow;
 
-            userRepository.CreateUser(appUser);
-
+            userRepository.CreateUser(appUser).Wait();
 
             return appUser;
         }
