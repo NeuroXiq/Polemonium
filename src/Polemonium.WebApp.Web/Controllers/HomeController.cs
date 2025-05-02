@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Polemonium.Api.Client.Client;
 using Polemonium.WebApp.Web.Models;
 using System.Diagnostics;
 
@@ -6,11 +7,13 @@ namespace Polemonium.WebApp.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IPolemoniumApiClient polemoniumApiClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IPolemoniumApiClient polemoniumApiClient)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.polemoniumApiClient = polemoniumApiClient;
         }
 
         public IActionResult Index()
@@ -20,6 +23,13 @@ namespace Polemonium.WebApp.Web.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        [HttpGet, Route("website/{dnsName}")]
+        public IActionResult Website(string dnsName)
+        {
+            polemoniumApiClient.GetWebsiteDetails(dnsName);
             return View();
         }
 
