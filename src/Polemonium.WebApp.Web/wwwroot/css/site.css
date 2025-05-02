@@ -14,7 +14,25 @@ body {
   background-color: var(--c-dark1);
 }
 
+.website .votes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.website .icon-thumb-up > svg,
+.website .icon-thumb-down > svg {
+    width: 100px;
+    height: 100px;
+}
+
+.icon-thumb-up > svg {
+    fill: green;
+}
+
+.icon-thumb-down > svg {
+    fill: red;
+}
 
 .website {
     display: flex;
