@@ -1,20 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Polemonium.Api.Web.Common;
+using Polemonium.Api.Web.Domain.Services;
 using Polemonium.Api.Web.Dtos;
+using Polemonium.Api.Web.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Polemonium.Api.Web.Controllers
 {
-    public class WebsiteController : PolemoniumController
+    public class HostController : PolemoniumController
     {
-        public WebsiteController()
+        private IHostService hostService;
+
+        public HostController(IHostService hostService)
         {
-        
+            this.hostService = hostService;
         }
 
-        [HttpGet, Route("hosts-votes")]
+        [HttpPut, Route("set-vote")]
+        public async Task SetVote(SetVoteModel model)
+        {
+            await hostService.SetVote(model.Host, (Domain.Enums.HostVoteType)model.Vote);
+        }
+
+        [HttpGet, Route("votes")]
         public IList<HostVoteDto> GetVotesStatus([FromQuery] string[] hosts)
         {
             if (hosts == null || hosts.Length == 0) return new List<HostVoteDto>();

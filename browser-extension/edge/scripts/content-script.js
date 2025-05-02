@@ -1,5 +1,31 @@
-
 function documentScript() {
+    function prunellaApi () {
+        var apiUrl = 'https://localhost:7292/api'
+
+        function get(url, searchParams) {
+            let fetchUrl = apiUrl + url;
+
+            if (searchParams) {
+                fetchUrl = fetchUrl + '?' + searchParams;
+            }
+
+            return fetch(fetchUrl, {
+                method: 'GET'
+            }).then(r => r.json());
+        }
+    
+        function put () {
+    
+        }
+    
+        return {
+            hostVotes: (hosts) => get('/host/votes', new URLSearchParams(hosts.map(h => ['hosts', h])).toString()),
+            setVote: (host, vote) => put('/host/set-vote', { host: host, vote: vote })
+        };
+    }
+
+    var api = prunellaApi();
+
     function sGetHostsVotesCache(urls) {
         return Promise.resolve([]);
     }
@@ -13,14 +39,7 @@ function documentScript() {
             return Promise.resolve([]);
         }
 
-        // indexed db get
-
-        let qparam = new URLSearchParams(hosts.map(h => ['hosts', h])).toString();
-        return fetch('https://localhost:7292/api/website/hosts-votes?' + qparam, {
-            method: 'GET'
-        }).then(r => {
-            return r.json()
-        }).then(r => {
+        return api.hostVotes(hosts).then(r => {
             return r;
         });
     }
@@ -72,10 +91,10 @@ function documentScript() {
     console.log('staring processDocument');
     let pageLinks = [...document.getElementsByTagName('a')]
         .filter(aEl => {
+            // check which links are valid e.g. href has valid url, href != null etc.
             try { let _ = new URL(aEl.href).host; return true; }
             catch { return false; }
         }).map(aEl => {
-            console.log(aEl.href);
             return {
                 aEl: aEl,
                 host: new URL(aEl.href).host

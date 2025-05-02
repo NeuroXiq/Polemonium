@@ -2,29 +2,23 @@
 <html>
   <head>
     <title>Clear Cookies and Cache</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <table>
-        <tr>
-            <td class="text-left">Cookies</td>
-            <td class="text-right"><button id="clearCookiesBtn"> &#128465; </button></td>
-        </tr>
-        <tr>
-            <td class="text-left">Session</td>
-            <td class="text-right"><button id="clearCacheBtn">&#128465;</button></td>
-        </tr>
-        <tr>
-            <td class="text-left">Storage</td>
-            <td class="text-right"><button id="clearStorageBtn">&#128465;</button></td>
-        </tr>
-        <tr>
-            <td class="text-left">Reload Page</td>
-            <td class="text-right"><button id="reloadeBtn">&#8634;</button></td>
-        </tr>
-    </table>
+    <div class="main">
+        <div class="top">
+            <a href="" class="current-host"></a>
+        </div>
+        <div class="btn">
+            <button class="btn-spam">SPAM</button>
+        </div>
+        <div class="btn">
+            <button class="btn-ok">OK</button>
+        </div>
+    </div>
     <hr>
     <span id = "message"></span>
+    <script src="../scripts/shared.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
