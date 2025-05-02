@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Polemonium.Api.Web.Common;
 using Polemonium.Api.Web.Domain.Services;
 using Polemonium.Api.Web.Dtos;
@@ -20,7 +21,7 @@ namespace Polemonium.Api.Web.Controllers
             this.hostService = hostService;
         }
 
-        [HttpPut, Route("set-vote")]
+        [HttpPut, Route("set-vote"), Authorize]
         public async Task SetVote(SetVoteModel model)
         {
             await hostService.SetVote(model.Host, (Domain.Enums.HostVoteType)model.Vote);

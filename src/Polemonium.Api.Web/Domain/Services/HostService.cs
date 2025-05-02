@@ -1,5 +1,6 @@
 ﻿using Polemonium.Api.Web.Common;
 using Polemonium.Api.Web.Domain.Enums;
+using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Infrastructure.Repositories;
 using System;
 using System.Threading.Tasks;
@@ -16,9 +17,9 @@ namespace Polemonium.Api.Web.Domain.Services
 
     public class HostService : IHostService
     {
-        private IHostRepository hostRepository;
+        private IWebsiteHostRepository hostRepository;
 
-        public HostService(IHostRepository hostRepository)
+        public HostService(IWebsiteHostRepository hostRepository)
         {
             this.hostRepository = hostRepository;
         }
