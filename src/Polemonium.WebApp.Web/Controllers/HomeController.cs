@@ -31,7 +31,8 @@ namespace Polemonium.WebApp.Web.Controllers
         public async Task<IActionResult> Website(string dnsName)
         {
             var details = await polemoniumApiClient.GetWebsiteDetailsAsync(dnsName);
-            var comments = new List<WebsiteCommentDto>();
+            var comments = await polemoniumApiClient.GetWebsiteCommentsAsync(details.Id, 0, 10);
+
             var model = new WebsiteModel()
             {
                 Comments = comments,

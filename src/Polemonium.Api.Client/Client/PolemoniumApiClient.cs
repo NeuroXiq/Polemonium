@@ -26,7 +26,14 @@ namespace Polemonium.Api.Client.Client
 
         public async Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(int websiteId, int skip, int take)
         {
-            return null;
+            return Enumerable.Range(1, 10).Select(t => new WebsiteCommentDto()
+            {
+                AppUserId = t,
+                Content = string.Join(" ", Enumerable.Repeat($"comment content {t}", t).ToArray()),
+                CreatedOn = DateTime.UtcNow,
+                WebsiteHostId = t,
+                Id = t
+            }).ToList();
         }
 
         public async Task<WebsiteDetailsDto> GetWebsiteDetailsAsync(string dnsName)
@@ -34,7 +41,7 @@ namespace Polemonium.Api.Client.Client
             return new WebsiteDetailsDto
             {
                 Id = 1,
-                CommentsCount = 5,
+                CommentsCount = 15,
                 DnsName = dnsName,
                 VoteDownCount = 5,
                 VoteUpCount = 10

@@ -1,23 +1,71 @@
 :root {
     --c-light1: #ececec;
     --c-dark1: #101218;
+    --c-dark2: #1f2128;
+    --c-dark3: #4d5160;
+    
+    --fsize-1: 32px;
+    font-size: 16px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    color: var(--c-light1);
+    background-color: var(--c-dark1);
 
-  color: var(--c-light1);
-  background-color: var(--c-dark1);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
+
+/* header */
+
+/* footer */
+footer {
+    margin-top: auto;
+}
+
+/* website */
 
 .website .votes {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 64px;
+}
+
+.website .votes-btn {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.website .votes-count {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-weight: 800;
+    font-size: var(--fsize-1);
+}
+
+.website .comments {
+    margin: 0 auto;
+}
+
+.website .title-comments {
+    font-size: var(--fsize-1);
+    border-top: 1px solid var(--c-light1);
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
 }
 
 .website .icon-thumb-up > svg,
@@ -35,17 +83,33 @@ body {
 }
 
 .website {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
 }
 
 .website .title {
     text-align: center;
     font-weight: 600;
     font-size: 96px;
-    padding: 16px;
-    min-width: 75%;
+    padding: 2rem;
+    border-top: 2px solid var(--c-light1);
+    border-bottom: 2px solid var(--c-light1);
+    margin: 0rem 0 2rem 0;
+}
 
-    border-top: 4px solid var(--c-light1);
-    border-bottom: 4px solid var(--c-light1);
+.website .comment {
+    border: 1px solid var(--c-dark3);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem auto;
+    max-width: 728px;
+}
+
+.website .comment-top {
+    border-bottom: 1px solid var(--c-dark3);
+    padding: 0.25rem;
+}
+
+.website .comment-content {
+    /*padding: 0.25rem;*/
 }

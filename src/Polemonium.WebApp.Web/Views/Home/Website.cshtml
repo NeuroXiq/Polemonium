@@ -8,16 +8,20 @@
 <div class="website">
     <h1 class="title">@website.DnsName</h1>
     <div class="votes">
-        <div class="votes-up">
+        <div class="votes-btn votes-up">
             @Html.Raw(@PHtmlHelper.IconThumbUp())
-            @website.VoteUpCount
+            <div class="votes-count">
+                @website.VoteUpCount
+            </div>
         </div>
-        <div class="votes-down">
+        <div class="votes-btn votes-down">
             @Html.Raw(@PHtmlHelper.IconThumbDown())
-            @website.VoteDownCount
+            <div class="votes-count">
+                @website.VoteDownCount
+            </div>
         </div>
     </div>
-    <h3>Comments</h3>
+    <h3 class="title-comments">Comments</h3>
     <div class="comments-list">
         @foreach (var comment in Model.Comments)
         {
