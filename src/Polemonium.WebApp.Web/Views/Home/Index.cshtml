@@ -7,7 +7,7 @@
     <h1 class="title">Check website</h1>
     <form action="/search-website" method="get">
         <div class="row">
-            <input class="search" type="search" name="dnsname" />
+            <input class="search" type="search" name="dnsname" autocomplete="off"/>
             <button class="btn-search">
                 @PHtmlHelper.IconSearch()
             </button>
@@ -15,30 +15,31 @@
     </form>
     <div class="links main-content">
         <div>
-            <a>
+            <a href="www.google.com">
                 <div>@PHtmlHelper.IconChrome()</div>
-                <div>Chrome</div>
+                <div>Install Chrome Extension</div>
             </a>
-            <a>
-                <div>@PHtmlHelper.IconChrome()</div>
-                <div>Edge</div>
+            <a href="www.google.com">
+                <div>@PHtmlHelper.IconEdge()</div>
+                <div>Install  Edge Browser Extension</div>
             </a>
-            <a>
-                <div>@PHtmlHelper.IconChrome()</div>
-                <div>Mozilla</div>
+            <a href="www.google.com">
+                <div>@PHtmlHelper.IconFirefox()</div>
+                <div>Install Mozilla Browser Extension</div>
             </a>
         </div>
+        <hr />
         <div>
-            <a>
-                <div>@PHtmlHelper.IconChrome()</div>
+            <a href="https://www.github.com/NeuroXiq/Polemonium">
+                <div>@PHtmlHelper.IconLinkBoxUpRight()</div>
                 <div>Github</div>
             </a>
-            <a>
-                <div>@PHtmlHelper.IconChrome()</div>
+            <a href="/terms-of-service">
+                <div>@PHtmlHelper.IconLinkBoxUpRight()</div>
                 <div>Terms of Service</div>
             </a>
-            <a>
-                <div>@PHtmlHelper.IconChrome()</div>
+            <a href="/sitemap">
+                <div>@PHtmlHelper.IconLinkBoxUpRight()</div>
                 <div>Sitemap</div>
             </a>
         </div>

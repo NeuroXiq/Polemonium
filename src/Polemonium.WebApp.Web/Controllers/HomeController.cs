@@ -28,6 +28,22 @@ namespace Polemonium.WebApp.Web.Controllers
             return View();
         }
 
+        [Route("/error")]
+        public async Task<IActionResult> Error()
+        {
+            var a = "";
+
+            return null;
+        }
+
+        [HttpGet, Route("/search-website")]
+        public async Task<IActionResult> SearchWebsite(string dnsName)
+        {
+            if (string.IsNullOrWhiteSpace(dnsName)) return Redirect("/");
+
+            return Redirect($"/website/{dnsName.Trim().ToLower()}");
+        }
+
         [HttpGet, Route("website/{dnsName}")]
         public async Task<IActionResult> Website(string dnsName, int comment_page)
         {

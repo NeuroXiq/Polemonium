@@ -4,6 +4,7 @@
     --c-dark2: #1f2128;
     --c-dark3: #4d5160;
     --c-dark4: #3f4454;
+    --c-blue1: #8ab4f8;
     
     --fsize-1: 32px;
     --fsize-2: 16px;
@@ -35,7 +36,7 @@ body {
     font-size: 1rem;
 }
 
-textarea, input, button, select, search {
+textarea, input, button, select, search, a {
     font-size: inherit;
     font-family: inherit;
     color: var(--c-light1);
@@ -50,7 +51,13 @@ textarea, input, button, select, search {
 
 /* footer */
 footer {
+    display: flex;
+    justify-content: flex-end;
     margin-top: auto;
+}
+
+a {
+    color: var(--c-blue1);
 }
 
 /* pagination */
@@ -256,8 +263,15 @@ textarea {
     cursor: pointer;
 }
 
+.home hr {
+    margin: 2rem;
+    max-width: 784px;
+    border: 2px solid var(--c-dark3);
+}
+
 .home .links {
-    display: flex;
+    max-width: 784px;
+    margin: 0 auto;
 }
 
 .home .links svg {

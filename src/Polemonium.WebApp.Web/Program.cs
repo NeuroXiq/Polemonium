@@ -25,6 +25,11 @@ namespace Program
                 app.UseHsts();
             }
 
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/error");
+            }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
