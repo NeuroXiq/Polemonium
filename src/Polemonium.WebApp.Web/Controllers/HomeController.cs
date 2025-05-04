@@ -45,11 +45,18 @@ namespace Polemonium.WebApp.Web.Controllers
             return View(model);
         }
 
-        [HttpPost, Route("website/add-comment")]
+        [HttpPost, Route("/website/set-vote")]
+        public async Task<IActionResult> SetVote(string dnsName, int vote)
+        {
+            await polemoniumApiClient.SetVote(await GetAuthToken(), dnsName, vote);
+
+            return Redirect($"/website/{dnsName}");
+        }
+
+        [HttpPost, Route("/website/add-comment")]
         public async Task<IActionResult> WebsiteAddComment(string dnsName, string content)
         {
-            await BackgroundRegister();
-            await polemoniumApiClient.AddWebsiteCommentAsync(HttpContext.Request.Cookies[AuthShared.AuthCookieName], dnsName, content);
+            await polemoniumApiClient.AddWebsiteCommentAsync(await GetAuthToken(), dnsName, content);
 
             return Redirect($"/website/{dnsName}");
         }
@@ -60,16 +67,16 @@ namespace Polemonium.WebApp.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private async Task BackgroundRegister()
+        private async Task<string> GetAuthToken()
         {
-            if (HttpContext.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var cookie))
+            if (!HttpContext.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var token))
             {
-                return;
+                token =( await polemoniumApiClient.RegisterAsync()).Token;
             }
 
-            string token = await polemoniumApiClient.RegisterAsync();
-
             HttpContext.Response.Cookies.Append(AuthShared.AuthCookieName, token);
+
+            return token;
         }
     }
 }

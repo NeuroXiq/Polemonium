@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Polemonium.Api.Client.Dtos;
 using Polemonium.Api.Web.Common;
 using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Domain.Services;
@@ -22,6 +23,26 @@ namespace Polemonium.Api.Web.Controllers
         {
             this.hostService = hostService;
             this.websiteHostRepository = websiteHostRepository;
+        }
+
+        [HttpGet, Route("website-host-details/{dnsName}")]
+        public async Task<WebsiteHostDetailsDto> GetWebsiteHostDetails(string dnsName)
+        {
+            var details = await websiteHostRepository.VwGetWebsiteHostDetailsByDnsName(dnsName);
+
+            if (details == null)
+            {
+                details = new Domain.ValueObjects.VwWebsiteHostDetails();
+            }
+
+            return new WebsiteHostDetailsDto
+            {
+                CommentsCount = details.CommentsCount,
+                DnsName = details.DnsName,
+                Id = details.Id,
+                VoteDownCount = details.VoteDownCount,
+                VoteUpCount = details.VoteUpCount
+            };
         }
 
         [HttpGet, Route("comments")]
@@ -51,7 +72,7 @@ namespace Polemonium.Api.Web.Controllers
         [HttpPut, Route("set-vote"), Authorize]
         public async Task<object> SetVote(SetVoteModel model)
         {
-            await hostService.SetVote(model.Host, (Domain.Enums.HostVoteType)model.Vote);
+            await hostService.SetVote(model.DnsName, (Domain.Enums.HostVoteType)model.Vote);
 
             return null;
         }

@@ -6,4 +6,8 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Polemonium.Shared\Polemonium.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

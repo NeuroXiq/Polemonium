@@ -83,8 +83,41 @@ RETURNING id
             return await Connection.QueryFirstOrDefaultAsync<WebsiteHost>($"{SQL_SelectWebsiteHost} WHERE id = @id", new { id });
         }
 
-        const string SQL_SelectWebsiteHost = "SELECT id as Id, dns_name as DnsName FROM website_host";
-            
+        public Task<WebsiteHostVote> GetWebsiteHostVote(string dnsName, int appUserId)
+        {
+            return Connection.QueryFirstOrDefaultAsync<WebsiteHostVote>($@"
+{SQL_SelectWebsiteHostVote("v")}
+JOIN website_host wh on wh.id = v.website_host_id
+WHERE v.app_user_id = @appUserId AND wh.dns_name = @dnsName"
+                , new { dnsName, appUserId });
+        }
+
+        public Task UpdateWebsiteHostVote(WebsiteHostVote existingVote)
+        {
+            return Connection.ExecuteAsync(@"
+UPDAET website_host_vote
+SET 
+app_user_id = @AppUserId,
+website_host_id = @WebsiteHostId,
+vote = @Vote
+WHERE id = @Id
+",
+                existingVote);
+        }
+
+        static string SQL_SelectWebsiteHostVote(string alias)
+        {
+            string p = alias == null ? "" : $"{alias}.";
+
+            return $@"
+SELECT
+{p}id as Id,
+{p}app_user_id as AppUserId,
+{p}website_host_id as WebsiteHostId,
+{p}vote as Vote
+FROM website_host_vote {alias}
+";
+        }
 
         static string SQL_SelectComment(string alias)
         {
@@ -97,5 +130,26 @@ SELECT {p}id as Id,
 {p}created_on as CreatedOn
 FROM website_host_comment {alias}";
         }
+
+        public Task<VwWebsiteHostDetails> VwGetWebsiteHostDetailsByDnsName(string dnsName)
+        {
+            return Connection.QueryFirstOrDefaultAsync<VwWebsiteHostDetails>(@"
+SELECT
+wh.id as Id,
+wh.dns_name as DnsName,
+(SELECT COUNT(*) FROM website_host_vote whv WHERE whv.website_host_id = wh.id AND vote = 1::char(1)) as VoteUpCount,
+(SELECT COUNT(*) FROM website_host_vote whv WHERE whv.website_host_id = wh.id AND vote = 2::char(1)) as VoteDownCount,
+(SELECT COUNT(*) FROM website_host_comment whc where whc.website_host_id = wh.id) as CommentsCount,
+(SELECT vote FROM website_host_vote whv WHERE whv.website_host_id = wh.id LIMIT 1) as UserVote
+FROM website_host wh
+WHERE wh.dns_name = @dnsName
+
+", new { dnsName });
+        }
+
+
+
+
+        const string SQL_SelectWebsiteHost = "SELECT id as Id, dns_name as DnsName FROM website_host";
     }
 }

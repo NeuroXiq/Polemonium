@@ -14,10 +14,16 @@
     <h1 class="title">@website.DnsName</h1>
     <div class="votes">
         <div class="votes-btn votes-up">
-            @Html.Raw(@PHtmlHelper.IconThumbUp())
+            <form action="set-vote" method="POST" action="set-vote">
+                <input type="hidden" value="1" name="vote" />
+                <input type="hidden" value="@website.DnsName" name="dnsName" />
+                <button type="submit">
+                    @Html.Raw(@PHtmlHelper.IconThumbUp())
+                </button>
             <div class="votes-count">
                 @website.VoteUpCount
             </div>
+            </form>
         </div>
         <div class="votes-btn votes-down">
             @Html.Raw(@PHtmlHelper.IconThumbDown())

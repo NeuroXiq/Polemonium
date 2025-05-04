@@ -1,4 +1,5 @@
 ﻿using Polemonium.Api.Client.Dtos;
+using Polemonium.Shared.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,54 +13,64 @@ namespace Polemonium.Api.Client.Client
     public interface IPolemoniumApiClient
     {
         Task<int> AddWebsiteCommentAsync(string authToken, string dnsName, string content);
-        Task<string> RegisterAsync();
-        Task<WebsiteDetailsDto> GetWebsiteDetailsAsync(string dnsName);
+        Task<RegisterResultDto> RegisterAsync();
+        Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string dnsName);
         Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(string dnsName, int skip, int take);
+        Task SetVote(string authToken, string dnsName, int vote);
     }
 
     public class PolemoniumApiClient : IPolemoniumApiClient
     {
-        HttpClient httpClient;
+        string baseAddress;
+        private HttpClient GetClient(string authToken = null)
+        {
+            var c = new HttpClient();
+            c.BaseAddress = new Uri(baseAddress);
+
+            if (authToken != null) c.DefaultRequestHeaders.Add("Authorization", "Bearer " + authToken);
+
+            return c;
+        }
 
         public PolemoniumApiClient(string apiUrl)
         {
-            httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(apiUrl);
+            baseAddress = apiUrl;
         }
 
         public async Task<int> AddWebsiteCommentAsync(string authToken, string dnsName, string content)
         {
-            var httpResult = await httpClient.PostAsJsonAsync("/api/host/add-comment", new { dnsName, content });
+            var httpResult = await GetClient(authToken).PostAsJsonAsync("/api/host/add-comment", new { dnsName, content });
 
             return await httpResult.Content.ReadFromJsonAsync<int>();
         }
 
-        public async Task<string> RegisterAsync()
+        public async Task<RegisterResultDto> RegisterAsync()
         {
-            var httpResult = await httpClient.PostAsync("/api/auth/register", null);
+            var httpResult = await GetClient().PostAsync("/api/auth/register", null);
 
-            var token = await httpResult.Content.ReadFromJsonAsync<string>();
-
-            return token;
+            return await httpResult.Content.ReadFromJsonAsync<RegisterResultDto>();
         }
 
         public async Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(string dnsName, int skip, int take)
         {
-            var httpResult = await httpClient.GetAsync($"/api/host/comments?dnsName={dnsName}&skip={skip}&take={take}");
+            var httpResult = await GetClient().GetAsync($"/api/host/comments?dnsName={dnsName}&skip={skip}&take={take}");
 
             return await httpResult.Content.ReadFromJsonAsync<IList<WebsiteCommentDto>>();
         }
 
-        public async Task<WebsiteDetailsDto> GetWebsiteDetailsAsync(string dnsName)
+        public async Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string dnsName)
         {
-            return new WebsiteDetailsDto
-            {
-                Id = 1,
-                CommentsCount = 15,
-                DnsName = dnsName,
-                VoteDownCount = 5,
-                VoteUpCount = 10
-            };
+            var httpResult = await GetClient().GetAsync($"/api/host/website-host-details/{dnsName}");
+
+            return await httpResult.Content.ReadFromJsonAsync<WebsiteHostDetailsDto>();
+        }
+
+        public async Task SetVote(string authToken, string dnsName, int vote)
+        {
+            var req = new { dnsName, vote } as object;
+            var result = await GetClient(authToken).PutAsJsonAsync("/api/host/set-vote", req);
+
+            result.EnsureSuccessStatusCode();
         }
     }
 }

@@ -43,6 +43,19 @@ namespace Polemonium.Api.Web.Domain.Services
             if (!Enum.IsDefined(vote)) throw new PValidationException("invalid vote value");
 
             WebsiteHost websiteHost = await GetOrCreateWebsiteHost(host);
+
+            WebsiteHostVote existingVote = await hostRepository.GetWebsiteHostVote(host, user.UserId);
+
+            if (existingVote != null)
+            {
+                if (existingVote.Vote == (byte)vote) return;
+
+                existingVote.Vote = (byte)vote;
+                await hostRepository.UpdateWebsiteHostVote(existingVote);
+
+                return;
+            }
+
             WebsiteHostVote hostVote = new WebsiteHostVote(user.UserId, websiteHost.Id, (byte)vote);
 
             await hostRepository.CreateWebsiteHostVote(hostVote);

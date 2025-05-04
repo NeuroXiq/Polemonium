@@ -40,7 +40,6 @@ namespace Program
             });
 
             app.UseHttpsRedirection();
-            app.UseSetupAuthToken();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSetCurrentUser();
@@ -127,20 +126,12 @@ namespace Program
         {
             builder.Use(async (context, next) =>
             {
-                if (!context.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var authToken) ||
-                    string.IsNullOrWhiteSpace(authToken) ||
-                    !context.User.Identity.IsAuthenticated)
+                string jwtToken = null;
+
+                if (context.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out jwtToken) &&
+                    !context.Request.Headers.ContainsKey("Authorization"))
                 {
-                    context.RequestServices.GetRequiredService<IUserService>();
-                    var token = context.RequestServices.GetRequiredService<IPAuthhentication>().RegisterNewUser();
-
-                    context.Response.Cookies.Append(AuthShared.AuthCookieName, token);
-                    authToken = token;
-                }
-
-                if (!string.IsNullOrWhiteSpace(authToken))
-                { 
-                    context.Request.Headers.Append("Authorization", "Bearer " + authToken);
+                    context.Request.Headers.Append("Authorization", "Bearer " + jwtToken);
                 }
 
                 await next(context);

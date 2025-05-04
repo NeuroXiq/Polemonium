@@ -4,7 +4,7 @@ namespace Polemonium.Api.Web.Models
 {
     public class SetVoteModel
     {
-        public string Host { get; set; }
+        public string DnsName { get; set; }
         public HostVoteType Vote { get; set; }
     }
 }

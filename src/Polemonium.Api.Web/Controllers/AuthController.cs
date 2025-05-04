@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Polemonium.Api.Client.Dtos;
 using Polemonium.Api.Web.Application;
 using System.Threading.Tasks;
 
@@ -14,9 +15,9 @@ namespace Polemonium.Api.Web.Controllers
         }
 
         [HttpPost, Route("register")]
-        public string Register()
+        public RegisterResultDto Register()
         {
-            return pauthentication.RegisterNewUser();
+            return new RegisterResultDto { Token = pauthentication.RegisterNewUser() };
         }
     }
 }

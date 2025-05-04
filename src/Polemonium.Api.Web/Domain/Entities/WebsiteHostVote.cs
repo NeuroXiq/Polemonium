@@ -6,6 +6,8 @@
         public int WebsiteHostId { get; set; }
         public byte Vote { get; set; }
 
+        public WebsiteHostVote() { }
+
         public WebsiteHostVote(int appUserId, int websiteHostId, byte vote)
         {
             AppUserId = appUserId;
