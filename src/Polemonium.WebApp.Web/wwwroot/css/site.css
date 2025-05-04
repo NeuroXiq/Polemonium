@@ -42,6 +42,9 @@ textarea, input, button, select, search, a {
     color: var(--c-light1);
 }
 
+a {
+    color: var(--c-blue1);
+}
 
 .main-content {
     max-width: 1200px;
@@ -56,9 +59,6 @@ footer {
     margin-top: auto;
 }
 
-a {
-    color: var(--c-blue1);
-}
 
 /* pagination */
 .pagination {
@@ -133,6 +133,12 @@ textarea {
     resize: none;
     color: white;
     /*width: 100%;*/
+}
+
+.error .link-home {
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 1rem;
 }
 
 /* website */

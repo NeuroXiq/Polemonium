@@ -1,4 +1,5 @@
 ﻿using Polemonium.Api.Client.Dtos;
+using System.Collections.Generic;
 
 namespace Polemonium.WebApp.Web.Models
 {

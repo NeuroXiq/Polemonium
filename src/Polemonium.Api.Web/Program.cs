@@ -39,6 +39,7 @@ namespace Program
                  .AllowAnyOrigin();
             });
 
+            app.UseApiExceptionHandler();
             app.UseHttpsRedirection();
             app.UseSetupAuthToken();
             app.UseAuthentication();
@@ -120,6 +121,34 @@ namespace Program
                 }
 
                 await next(context);
+            });
+        }
+
+        public static void UseApiExceptionHandler(this WebApplication builder)
+        {
+            builder.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next(context);
+                }
+                catch (Exception e)
+                {
+                    string error = null;
+
+                    if (e is PValidationException)
+                    {
+                        context.Response.StatusCode = 400;
+                        error = (e as PValidationException).Message;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 500;
+                        error = "internal API error occured";
+                    }
+
+                    await context.Response.WriteAsJsonAsync(new { error });
+                }
             });
         }
 

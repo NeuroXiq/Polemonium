@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polemonium.Api.Client.Client;
+using Polemonium.Api.Client.Common;
 using Polemonium.Api.Client.Dtos;
 using Polemonium.Shared.Auth;
 using Polemonium.WebApp.Web.Models;
+using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Polemonium.WebApp.Web.Controllers
 {
@@ -29,11 +35,29 @@ namespace Polemonium.WebApp.Web.Controllers
         }
 
         [Route("/error")]
-        public async Task<IActionResult> Error()
+        public IActionResult Error()
         {
-            var a = "";
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            exceptionFeature.Endpoint.ToString();
 
-            return null;
+            string errorMessage = "";
+
+            if (exceptionFeature.Error is PolemoniumApiResponseException)
+            {
+                errorMessage = (exceptionFeature.Error as PolemoniumApiResponseException).Error;
+            }
+
+            ErrorViewModel model = new ErrorViewModel()
+            {
+                ErrorMessage = errorMessage,
+                RequestId = HttpContext.TraceIdentifier,
+                Path = exceptionFeature.Path.ToString(),
+                ExceptionType = exceptionFeature.Error?.GetType().Name,
+                Endpoint = exceptionFeature.Endpoint.ToString(),
+                RouteValues = string.Join(", ", exceptionFeature.RouteValues?.ToArray().Select(t => $"{t.Key}: {t.Value}").ToArray() ?? new string[0])
+            };
+
+            return View("Error", model);
         }
 
         [HttpGet, Route("/search-website")]
@@ -77,12 +101,6 @@ namespace Polemonium.WebApp.Web.Controllers
             await polemoniumApiClient.AddWebsiteCommentAsync(await GetAuthTokenOrRegister(), dnsName, content);
 
             return Redirect($"/website/{dnsName}");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         private string GetAuthTokenIfExists()

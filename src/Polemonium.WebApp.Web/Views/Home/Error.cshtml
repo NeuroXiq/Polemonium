@@ -1,0 +1,14 @@
+﻿@model ErrorViewModel
+
+<div class="main-content error">
+    <h1>Error occured</h1>
+    <h2> ErrorMessage: @Model.ErrorMessage </h2>
+    <hr />
+    <div> Path: @Model.Path </div>
+    <div> Endpoint: @Model.Endpoint </div>
+    <div> RouteValues: @Model.RouteValues </div>
+    <div> ExceptionType: @Model.ExceptionType </div>
+    <div> RequestId: @Model.RequestId </div>
+
+    <a href="/" class="link-home">Go to Home Page</a>
+</div>

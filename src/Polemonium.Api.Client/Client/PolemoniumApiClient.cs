@@ -1,4 +1,6 @@
-﻿using Polemonium.Api.Client.Dtos;
+﻿using Polemonium.Api.Client.Common;
+using Polemonium.Api.Client.Dtos;
+using Polemonium.Api.Client.Dtos.Common;
 using Polemonium.Shared.Auth;
 using System;
 using System.Collections.Generic;
@@ -41,12 +43,16 @@ namespace Polemonium.Api.Client.Client
         {
             var httpResult = await GetClient(authToken).PostAsJsonAsync("/api/host/add-comment", new { dnsName, content });
 
+            HandleError(httpResult);
+
             return await httpResult.Content.ReadFromJsonAsync<int>();
         }
 
         public async Task<RegisterResultDto> RegisterAsync()
         {
             var httpResult = await GetClient().PostAsync("/api/auth/register", null);
+
+            HandleError(httpResult);
 
             return await httpResult.Content.ReadFromJsonAsync<RegisterResultDto>();
         }
@@ -55,12 +61,16 @@ namespace Polemonium.Api.Client.Client
         {
             var httpResult = await GetClient().GetAsync($"/api/host/comments?dnsName={dnsName}&skip={skip}&take={take}");
 
+            HandleError(httpResult);
+
             return await httpResult.Content.ReadFromJsonAsync<IList<WebsiteCommentDto>>();
         }
 
         public async Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string authToken, string dnsName)
         {
             var httpResult = await GetClient(authToken).GetAsync($"/api/host/website-host-details/{dnsName}");
+
+            HandleError(httpResult);
 
             return await httpResult.Content.ReadFromJsonAsync<WebsiteHostDetailsDto>();
         }
@@ -70,7 +80,17 @@ namespace Polemonium.Api.Client.Client
             var req = new { dnsName, vote } as object;
             var result = await GetClient(authToken).PutAsJsonAsync("/api/host/set-vote", req);
 
-            result.EnsureSuccessStatusCode();
+            HandleError(result);
+        }
+
+        static void HandleError(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = response.Content.ReadFromJsonAsync<PolemoniumApiErrorResponse>().Result;
+
+                throw new PolemoniumApiResponseException() { Error = error.Error };
+            }
         }
     }
 }

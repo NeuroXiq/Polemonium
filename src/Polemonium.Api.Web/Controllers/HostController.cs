@@ -38,7 +38,10 @@ namespace Polemonium.Api.Web.Controllers
 
             if (details == null)
             {
-                details = new Domain.ValueObjects.VwWebsiteHostDetails();
+                details = new Domain.ValueObjects.VwWebsiteHostDetails()
+                {
+                    DnsName = dnsName
+                };
             }
 
             return new WebsiteHostDetailsDto
