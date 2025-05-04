@@ -4,35 +4,39 @@
     ViewData["Title"] = $"Page Rating {Model.WebsiteDetails.DnsName}";
     var website = Model.WebsiteDetails;
 
-    var paginationButton = new Func<bool, int, string>((page, current) =>
-    {
-        return $"<button>{page}<button>";
-    });
+    var userVoteUp = website.UserVote == Polemonium.Api.Client.Dtos.Enums.HostVoteType.Up;
+    var userVoteDown = website.UserVote == Polemonium.Api.Client.Dtos.Enums.HostVoteType.Down;
 }
 
 <div class="website">
     <h1 class="title">@website.DnsName</h1>
     <div class="votes">
-        <div class="votes-btn votes-up">
+        <div class="vote-btn ">
             <form action="set-vote" method="POST" action="set-vote">
                 <input type="hidden" value="1" name="vote" />
                 <input type="hidden" value="@website.DnsName" name="dnsName" />
-                <button type="submit">
+                <button type="submit" class="@(userVoteUp ? "voted" : "")">
                     @Html.Raw(@PHtmlHelper.IconThumbUp())
                 </button>
-            <div class="votes-count">
+            <div class="vote-count">
                 @website.VoteUpCount
             </div>
             </form>
         </div>
-        <div class="votes-btn votes-down">
-            @Html.Raw(@PHtmlHelper.IconThumbDown())
-            <div class="votes-count">
+        <div class="vote-btn">
+            <form action="set-vote" method="POST">
+                <input type="hidden" value="2" name="vote" />
+                <input type="hidden" value="@website.DnsName" name="dnsName" />
+                <button type="submit" class="@(userVoteDown ? "voted" : "")">
+                    @Html.Raw(@PHtmlHelper.IconThumbDown())
+                </button>
+            </form>
+            <div class="vote-count">
                 @website.VoteDownCount
             </div>
         </div>
     </div>
-    <h3 class="title-comments">Comments</h3>
+    <h3 class="title-comments">Comments (@website.CommentsCount)</h3>
     <div class="comments-list">
         @foreach (var comment in Model.Comments)
         {

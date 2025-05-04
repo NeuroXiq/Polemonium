@@ -1,4 +1,6 @@
-﻿namespace Polemonium.Api.Web.Domain.ValueObjects
+﻿using Polemonium.Api.Web.Domain.Enums;
+
+namespace Polemonium.Api.Web.Domain.ValueObjects
 {
     public class VwWebsiteHostDetails
     {
@@ -7,6 +9,7 @@
         public int VoteUpCount { get; set; }
         public int VoteDownCount { get; set; }
         public int CommentsCount { get; set; }
+        public HostVoteType? UserVote { get; set; }
 
         public VwWebsiteHostDetails() { }
     }

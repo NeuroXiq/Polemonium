@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Polemonium.Api.Client.Dtos;
+using Polemonium.Api.Client.Dtos.Enums;
 using Polemonium.Api.Web.Common;
 using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Domain.Services;
@@ -16,11 +17,16 @@ namespace Polemonium.Api.Web.Controllers
 {
     public class HostController : PolemoniumController
     {
+        private ICurrentUser user;
         private IHostService hostService;
         private IWebsiteHostRepository websiteHostRepository;
 
-        public HostController(IHostService hostService, IWebsiteHostRepository websiteHostRepository)
+        public HostController(
+            IHostService hostService,
+            IWebsiteHostRepository websiteHostRepository,
+            ICurrentUser user)
         {
+            this.user = user;
             this.hostService = hostService;
             this.websiteHostRepository = websiteHostRepository;
         }
@@ -28,7 +34,7 @@ namespace Polemonium.Api.Web.Controllers
         [HttpGet, Route("website-host-details/{dnsName}")]
         public async Task<WebsiteHostDetailsDto> GetWebsiteHostDetails(string dnsName)
         {
-            var details = await websiteHostRepository.VwGetWebsiteHostDetailsByDnsName(dnsName);
+            var details = await websiteHostRepository.VwGetWebsiteHostDetailsByDnsName(dnsName, user.UserIdOrNull);
 
             if (details == null)
             {
@@ -41,7 +47,8 @@ namespace Polemonium.Api.Web.Controllers
                 DnsName = details.DnsName,
                 Id = details.Id,
                 VoteDownCount = details.VoteDownCount,
-                VoteUpCount = details.VoteUpCount
+                VoteUpCount = details.VoteUpCount,
+                UserVote = (HostVoteType?)details.UserVote
             };
         }
 

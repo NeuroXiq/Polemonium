@@ -40,6 +40,7 @@ namespace Program
             });
 
             app.UseHttpsRedirection();
+            app.UseSetupAuthToken();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSetCurrentUser();

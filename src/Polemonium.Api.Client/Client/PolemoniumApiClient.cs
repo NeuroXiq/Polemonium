@@ -14,7 +14,7 @@ namespace Polemonium.Api.Client.Client
     {
         Task<int> AddWebsiteCommentAsync(string authToken, string dnsName, string content);
         Task<RegisterResultDto> RegisterAsync();
-        Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string dnsName);
+        Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string authToken, string dnsName);
         Task<IList<WebsiteCommentDto>> GetWebsiteCommentsAsync(string dnsName, int skip, int take);
         Task SetVote(string authToken, string dnsName, int vote);
     }
@@ -58,9 +58,9 @@ namespace Polemonium.Api.Client.Client
             return await httpResult.Content.ReadFromJsonAsync<IList<WebsiteCommentDto>>();
         }
 
-        public async Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string dnsName)
+        public async Task<WebsiteHostDetailsDto> GetWebsiteDetailsAsync(string authToken, string dnsName)
         {
-            var httpResult = await GetClient().GetAsync($"/api/host/website-host-details/{dnsName}");
+            var httpResult = await GetClient(authToken).GetAsync($"/api/host/website-host-details/{dnsName}");
 
             return await httpResult.Content.ReadFromJsonAsync<WebsiteHostDetailsDto>();
         }

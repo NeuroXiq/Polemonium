@@ -95,7 +95,7 @@ WHERE v.app_user_id = @appUserId AND wh.dns_name = @dnsName"
         public Task UpdateWebsiteHostVote(WebsiteHostVote existingVote)
         {
             return Connection.ExecuteAsync(@"
-UPDAET website_host_vote
+UPDATE website_host_vote
 SET 
 app_user_id = @AppUserId,
 website_host_id = @WebsiteHostId,
@@ -131,7 +131,7 @@ SELECT {p}id as Id,
 FROM website_host_comment {alias}";
         }
 
-        public Task<VwWebsiteHostDetails> VwGetWebsiteHostDetailsByDnsName(string dnsName)
+        public Task<VwWebsiteHostDetails> VwGetWebsiteHostDetailsByDnsName(string dnsName, int? appUserId)
         {
             return Connection.QueryFirstOrDefaultAsync<VwWebsiteHostDetails>(@"
 SELECT
@@ -140,11 +140,17 @@ wh.dns_name as DnsName,
 (SELECT COUNT(*) FROM website_host_vote whv WHERE whv.website_host_id = wh.id AND vote = 1::char(1)) as VoteUpCount,
 (SELECT COUNT(*) FROM website_host_vote whv WHERE whv.website_host_id = wh.id AND vote = 2::char(1)) as VoteDownCount,
 (SELECT COUNT(*) FROM website_host_comment whc where whc.website_host_id = wh.id) as CommentsCount,
-(SELECT vote FROM website_host_vote whv WHERE whv.website_host_id = wh.id LIMIT 1) as UserVote
+(
+SELECT vote FROM website_host_vote whv
+WHERE whv.website_host_id = wh.id
+AND app_user_id = @appUserId
+LIMIT 1
+)
+as UserVote
 FROM website_host wh
 WHERE wh.dns_name = @dnsName
 
-", new { dnsName });
+", new { dnsName, appUserId });
         }
 
 

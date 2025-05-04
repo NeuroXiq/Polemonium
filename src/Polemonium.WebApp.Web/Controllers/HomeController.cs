@@ -29,17 +29,19 @@ namespace Polemonium.WebApp.Web.Controllers
         }
 
         [HttpGet, Route("website/{dnsName}")]
-        public async Task<IActionResult> Website(string dnsName)
+        public async Task<IActionResult> Website(string dnsName, int comment_page)
         {
-            var details = await polemoniumApiClient.GetWebsiteDetailsAsync(dnsName);
-            var comments = await polemoniumApiClient.GetWebsiteCommentsAsync(dnsName, 0, 10);
+            comment_page = comment_page < 1 ? 1 : comment_page;
+            int commentPerPage = 5;
+            var details = await polemoniumApiClient.GetWebsiteDetailsAsync(GetAuthTokenIfExists(), dnsName);
+            var comments = await polemoniumApiClient.GetWebsiteCommentsAsync(dnsName, commentPerPage * (comment_page - 1), commentPerPage);
 
             var model = new WebsiteModel()
             {
                 Comments = comments,
                 WebsiteDetails = details,
-                CurrentPage = 2,
-                PageCount = 2
+                CurrentPage = comment_page,
+                PageCount = (int)Math.Ceiling((double)details.CommentsCount / commentPerPage)
             };
 
             return View(model);
@@ -48,7 +50,7 @@ namespace Polemonium.WebApp.Web.Controllers
         [HttpPost, Route("/website/set-vote")]
         public async Task<IActionResult> SetVote(string dnsName, int vote)
         {
-            await polemoniumApiClient.SetVote(await GetAuthToken(), dnsName, vote);
+            await polemoniumApiClient.SetVote(await GetAuthTokenOrRegister(), dnsName, vote);
 
             return Redirect($"/website/{dnsName}");
         }
@@ -56,7 +58,7 @@ namespace Polemonium.WebApp.Web.Controllers
         [HttpPost, Route("/website/add-comment")]
         public async Task<IActionResult> WebsiteAddComment(string dnsName, string content)
         {
-            await polemoniumApiClient.AddWebsiteCommentAsync(await GetAuthToken(), dnsName, content);
+            await polemoniumApiClient.AddWebsiteCommentAsync(await GetAuthTokenOrRegister(), dnsName, content);
 
             return Redirect($"/website/{dnsName}");
         }
@@ -67,7 +69,17 @@ namespace Polemonium.WebApp.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private async Task<string> GetAuthToken()
+        private string GetAuthTokenIfExists()
+        {
+            if (HttpContext.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var token))
+            {
+                return token;
+            }
+
+            return null;
+        }
+
+        private async Task<string> GetAuthTokenOrRegister()
         {
             if (!HttpContext.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var token))
             {
