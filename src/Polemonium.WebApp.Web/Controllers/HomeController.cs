@@ -36,11 +36,20 @@ namespace Polemonium.WebApp.Web.Controllers
             var model = new WebsiteModel()
             {
                 Comments = comments,
-                WebsiteDetails = details
+                WebsiteDetails = details,
+                CurrentPage = 2,
+                PageCount = 55
             };
 
             return View(model);
         }
+
+        [HttpGet, Route("website/add-comment/{dnsName}")]
+        public async Task<IActionResult> WebsiteAddComment()
+        {
+            return null;
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

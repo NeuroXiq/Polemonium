@@ -3,9 +3,17 @@
     --c-dark1: #101218;
     --c-dark2: #1f2128;
     --c-dark3: #4d5160;
+    --c-dark4: #3f4454;
     
     --fsize-1: 32px;
+    --fsize-2: 16px;
+
+    --margin1: 1rem;
+
     font-size: 16px;
+
+    --bradius-1: 0.25rem;
+    color: var(--c-light1);
 }
 
 body, html {
@@ -24,6 +32,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-size: 1rem;
 }
 
 /* header */
@@ -31,6 +40,79 @@ body {
 /* footer */
 footer {
     margin-top: auto;
+}
+
+/* pagination */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin: 1rem 0;
+}
+
+.btn-pagination {
+    margin: 0.25rem;
+    border: 1px solid var(--c-dark3);
+    font-weight: 500;
+    background-color: var(--c-dark1);
+    color: var(--c-light1);
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+}
+
+.btn-pagination.current {
+    outline: 2px solid var(--c-light1);
+}
+
+/* btn */
+
+.btn {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--c-dark2);
+    background-color: var(--c-dark4);
+    color: var(--c-light1);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 0.25rem 1rem;
+    cursor: pointer;
+}
+
+.btn .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+
+/* form */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form .row {
+    display: flex;
+    flex: 1 0 1px;
+    margin: 0.25rem 0;
+}
+
+form .buttons {
+    justify-content: flex-end;
+}
+
+form .row.input > textarea,
+form .row.input > input {
+    flex: 1 0 1px;
+}
+
+/* textarea */
+textarea {
+    background-color: var(--c-dark4);
+    border-radius: var(--bradius-1);
+    resize: none;
+    /*width: 100%;*/
 }
 
 /* website */
@@ -97,12 +179,17 @@ footer {
     margin: 0rem 0 2rem 0;
 }
 
+.website .comments-list {
+    max-width: 728px;
+    margin: 0 auto;
+    padding: var(--margin1);
+}
+
 .website .comment {
     border: 1px solid var(--c-dark3);
     padding: 1rem;
     border-radius: 0.5rem;
-    margin: 1rem auto;
-    max-width: 728px;
+    margin: var(--margin1) 0;
 }
 
 .website .comment-top {

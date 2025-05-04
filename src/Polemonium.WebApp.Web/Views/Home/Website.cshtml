@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = $"Page Rating {Model.WebsiteDetails.DnsName}";
     var website = Model.WebsiteDetails;
+
+    var paginationButton = new Func<bool, int, string>((page, current) =>
+    {
+        return $"<button>{page}<button>";
+    });
 }
 
 <div class="website">
@@ -26,11 +31,29 @@
         @foreach (var comment in Model.Comments)
         {
             <div class="comment">
-                <div class="top">
+                <div class="comment-top">
                     @comment.CreatedOn
                 </div>
-                <p class="content">@comment.Content</p>
+                <p class="comment-content">@comment.Content</p>
             </div>
         }
+        @PHtmlHelper.Pagination(Model.PageCount, Model.CurrentPage, (pageNo) => $"?comment_page={pageNo}")
+        <div class="comment-add">
+            <form>
+                <div class="row input">
+                    <textarea name="content" rows="4"></textarea>
+                </div>
+                <div class="row buttons">
+                    <button type="submit" class="btn submit">
+                        <div>
+                            @PHtmlHelper.IconPlus()
+                        </div>
+                        <div>
+                            Add Comment
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
