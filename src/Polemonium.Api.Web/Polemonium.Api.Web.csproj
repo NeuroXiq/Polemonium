@@ -23,4 +23,9 @@
 	  <None Remove="Infrastructure\Migrations\00002_core_tables.sql" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Polemonium.Api.Client\Polemonium.Api.Client.csproj" />
+	  <ProjectReference Include="..\Polemonium.Shared\Polemonium.Shared.csproj" />
+	</ItemGroup>
+
 </Project>

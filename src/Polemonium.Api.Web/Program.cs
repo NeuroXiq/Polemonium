@@ -13,6 +13,7 @@ using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Domain.Services;
 using Polemonium.Api.Web.Infrastructure.Repositories;
 using Polemonium.Api.Web.Infrastructure.Shared;
+using Polemonium.Shared.Auth;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace Program
                 });
 
             // app services
-            builder.Services.AddSingleton<IPAuthhentication, PAuthentication>();
+            builder.Services.AddScoped<IPAuthhentication, PAuthentication>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
@@ -126,17 +127,14 @@ namespace Program
         {
             builder.Use(async (context, next) =>
             {
-                if (!context.Request.Cookies.TryGetValue("polemonium_authtoken", out var authToken) ||
+                if (!context.Request.Cookies.TryGetValue(AuthShared.AuthCookieName, out var authToken) ||
                     string.IsNullOrWhiteSpace(authToken) ||
                     !context.User.Identity.IsAuthenticated)
                 {
-                    var userService = context.RequestServices.GetRequiredService<IUserService>();
-                    var pauthentication = context.RequestServices.GetRequiredService<IPAuthhentication>();
+                    context.RequestServices.GetRequiredService<IUserService>();
+                    var token = context.RequestServices.GetRequiredService<IPAuthhentication>().RegisterNewUser();
 
-                    var user = userService.CreateUser();
-                    var token = pauthentication.CreateJwtToken(user);
-
-                    context.Response.Cookies.Append("polemonium_authtoken", token);
+                    context.Response.Cookies.Append(AuthShared.AuthCookieName, token);
                     authToken = token;
                 }
 

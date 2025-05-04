@@ -13,7 +13,8 @@ namespace Polemonium.Api.Web.Domain.Services
         Task SetVote(string host, HostVoteType vote);
         Task<int> AddComment(string content);
         Task UpdateComment();
-        Task DeleteComment(); 
+        Task DeleteComment();
+        Task<int> AddCommentAsync(string dnsName, string content);
     }
 
     public class HostService : IHostService
@@ -39,12 +40,6 @@ namespace Polemonium.Api.Web.Domain.Services
 
         public async Task SetVote(string host, HostVoteType vote)
         {
-            host = host?.Trim();
-            if (string.IsNullOrWhiteSpace(host) || Uri.CheckHostName(host) == UriHostNameType.Unknown)
-            {
-                throw new PValidationException("invalid host name");
-            }
-
             if (!Enum.IsDefined(vote)) throw new PValidationException("invalid vote value");
 
             WebsiteHost websiteHost = await GetOrCreateWebsiteHost(host);
@@ -55,6 +50,14 @@ namespace Polemonium.Api.Web.Domain.Services
 
         async Task<WebsiteHost> GetOrCreateWebsiteHost(string dnsName)
         {
+            if (string.IsNullOrWhiteSpace(dnsName)) throw new PValidationException("empty dnsName");
+
+            dnsName = dnsName?.Trim();
+            if (string.IsNullOrWhiteSpace(dnsName) || Uri.CheckHostName(dnsName) == UriHostNameType.Unknown)
+            {
+                throw new PValidationException("invalid host name");
+            }
+
             WebsiteHost host = await hostRepository.GetByDnsName(dnsName);
 
             if (host == null)
@@ -69,6 +72,26 @@ namespace Polemonium.Api.Web.Domain.Services
         public Task UpdateComment()
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<int> AddCommentAsync(string dnsName, string content)
+        {
+            if (string.IsNullOrWhiteSpace(content)) throw new PValidationException("content is empty");
+            if (content.Length > 512) throw new PValidationException("content length exceed 512 chars");
+
+            WebsiteHost websiteHost = await GetOrCreateWebsiteHost(dnsName);
+
+            var comment = new WebsiteHostComment()
+            {
+                AppUserId = user.UserId,
+                Content = content,
+                CreatedOn = DateTime.UtcNow,
+                WebsiteHostId = websiteHost.Id
+            };
+
+            await hostRepository.CreateCommentAsync(comment);
+
+            return comment.Id;
         }
     }
 }

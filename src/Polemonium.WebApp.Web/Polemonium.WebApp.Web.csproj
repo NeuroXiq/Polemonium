@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polemonium.Api.Client\Polemonium.Api.Client.csproj" />
+    <ProjectReference Include="..\Polemonium.Shared\Polemonium.Shared.csproj" />
   </ItemGroup>
 
 </Project>

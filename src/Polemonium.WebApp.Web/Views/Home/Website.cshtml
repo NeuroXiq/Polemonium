@@ -39,7 +39,8 @@
         }
         @PHtmlHelper.Pagination(Model.PageCount, Model.CurrentPage, (pageNo) => $"?comment_page={pageNo}")
         <div class="comment-add">
-            <form>
+            <form method="POST" action="/website/add-comment">
+                <input name="dnsname" value="@website.DnsName" type="hidden"/>
                 <div class="row input">
                     <textarea name="content" rows="4"></textarea>
                 </div>

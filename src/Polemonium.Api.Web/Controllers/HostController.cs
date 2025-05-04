@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Polemonium.Api.Web.Common;
+using Polemonium.Api.Web.Domain.Repositories;
 using Polemonium.Api.Web.Domain.Services;
 using Polemonium.Api.Web.Dtos;
 using Polemonium.Api.Web.Models;
@@ -15,10 +16,36 @@ namespace Polemonium.Api.Web.Controllers
     public class HostController : PolemoniumController
     {
         private IHostService hostService;
+        private IWebsiteHostRepository websiteHostRepository;
 
-        public HostController(IHostService hostService)
+        public HostController(IHostService hostService, IWebsiteHostRepository websiteHostRepository)
         {
             this.hostService = hostService;
+            this.websiteHostRepository = websiteHostRepository;
+        }
+
+        [HttpGet, Route("comments")]
+        public async Task<IList<Client.Dtos.WebsiteCommentDto>> GetComments(string dnsName, int skip, int take)
+        {
+            if (skip < 0) throw new PValidationException("skip invalid value");
+            if (take < 0 || take > 100) throw new PValidationException("take invalid value");
+
+            var comments = await websiteHostRepository.GetWebsiteHostCommentsByDnsName(dnsName, skip, take);
+
+            return comments.Select(c => new Client.Dtos.WebsiteCommentDto
+            {
+                AppUserId = c.AppUserId,
+                Content = c.Content,
+                CreatedOn = c.CreatedOn,
+                Id = c.Id,
+                WebsiteHostId = c.WebsiteHostId
+            }).ToList();
+        }
+
+        [HttpPost, Route("add-comment"), Authorize]
+        public async Task<int> AddComment(AddCommentModel model)
+        {
+            return await hostService.AddCommentAsync(model.DnsName, model.Content);
         }
 
         [HttpPut, Route("set-vote"), Authorize]
