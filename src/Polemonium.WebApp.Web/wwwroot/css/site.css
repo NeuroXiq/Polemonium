@@ -35,11 +35,17 @@ body {
     font-size: 1rem;
 }
 
-textarea, input, button, select {
+textarea, input, button, select, search {
     font-size: inherit;
     font-family: inherit;
+    color: var(--c-light1);
 }
 
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 /* header */
 
 /* footer */
@@ -93,8 +99,9 @@ footer {
 
 /* form */
 form {
-    display: flex;
+    /*display: flex;
     flex-direction: column;
+    justify-content: center;*/
 }
 
 form .row {
@@ -198,9 +205,9 @@ textarea {
 }
 
 .website .comments-list {
-    max-width: 728px;
     margin: 0 auto;
     padding: var(--margin1);
+    max-width: 728px;
 }
 
 .website .comment {
@@ -218,3 +225,66 @@ textarea {
 .website .comment-content {
     /*padding: 0.25rem;*/
 }
+
+/* home */
+
+.home .title {
+    font-size: 96px;
+    text-align: center;
+}
+
+.home .search {
+    /*max-width: 784px;*/
+    width: 100%;
+    height: 6rem;
+    font-size: 4rem;
+    padding: 1rem;
+    background-color: transparent;
+    border: 1px solid var(--c-dark3);
+    border-radius: var(--bradius-1);
+}
+
+.home .btn-search .icon > svg {
+    width: 4rem;
+    height: 4rem;
+    fill: var(--c-light1);
+}
+
+.home .btn-search { 
+    background-color: var(--c-dark4);
+    border: 1px solid var(--c-dark3);
+    cursor: pointer;
+}
+
+.home .links {
+    display: flex;
+}
+
+.home .links svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.home .links > div {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 1px;
+}
+
+.home .links a {
+    border-radius: var(--bradius-1);
+    font-weight: 500;
+    font-size: 1.25rem;
+    padding: 1rem;
+    margin: 0.5rem 2rem;
+    border: 1px solid var(--c-dark4);
+    text-decoration: none;
+    color: var(--c-light1);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+

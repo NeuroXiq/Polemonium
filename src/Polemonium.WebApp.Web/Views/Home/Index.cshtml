@@ -1,8 +1,46 @@
-﻿@{
+﻿@using Polemonium.WebApp.Web.Helpers
+@{
     ViewData["Title"] = "Page Title Polemonium";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home main-content">
+    <h1 class="title">Check website</h1>
+    <form action="/search-website" method="get">
+        <div class="row">
+            <input class="search" type="search" name="dnsname" />
+            <button class="btn-search">
+                @PHtmlHelper.IconSearch()
+            </button>
+        </div>
+    </form>
+    <div class="links main-content">
+        <div>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Chrome</div>
+            </a>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Edge</div>
+            </a>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Mozilla</div>
+            </a>
+        </div>
+        <div>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Github</div>
+            </a>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Terms of Service</div>
+            </a>
+            <a>
+                <div>@PHtmlHelper.IconChrome()</div>
+                <div>Sitemap</div>
+            </a>
+        </div>
+    </div>
 </div>
