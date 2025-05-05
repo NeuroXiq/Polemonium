@@ -1,9 +1,9 @@
 window.Polemonium = window.Polemonium || {};
 window.Polemonium.state = window.Polemonium.state || {};
-window.Polemonium.Shared = PolemoniumSharedSetup();
+window.Polemonium.Shared = PolemoniumExtensionSharedSetup();
 
 var getState = () => window.Polemonium.state;
-var api = window.Polemonium.Shared.Api;
+var api = window.Polemonium.Shared.api;
 var enums = window.Polemonium.Shared.Enums;
 
 function onTabUpdated() {

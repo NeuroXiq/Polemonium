@@ -88,10 +88,10 @@ namespace Polemonium.Api.Web.Controllers
         }
 
         [HttpGet, Route("votes")]
-        public IList<HostVoteDto> GetVotesStatus([FromQuery] string[] hosts)
+        public IList<HostVoteDto> GetVotesStatus([FromQuery] string[] dnsName)
         {
-            if (hosts == null || hosts.Length == 0) return new List<HostVoteDto>();
-            string[] validSites = hosts
+            if (dnsName == null || dnsName.Length == 0) return new List<HostVoteDto>();
+            string[] validSites = dnsName
                 .Where(h => Uri.CheckHostName(h) != UriHostNameType.Unknown)
                 .Select(t => t.Trim())
                 .Distinct()
@@ -101,7 +101,7 @@ namespace Polemonium.Api.Web.Controllers
 
             var r = new Random();
 
-            return hosts.Select(t => new HostVoteDto { DnsName = t, VoteDownCount = r.Next(100), VoteUpCount = r.Next(100) }).ToList();
+            return dnsName.Select(t => new HostVoteDto { DnsName = t, VoteDownCount = r.Next(100), VoteUpCount = r.Next(100) }).ToList();
         }
     }
 }

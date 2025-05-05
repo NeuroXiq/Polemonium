@@ -39,9 +39,14 @@
     {
       "matches": [
         "https://google.com/*",
-        "https://www.google.com/*"
+        "https://www.google.com/*",
+        "https://duckduckgo.com/*",
+        "https://www.duckduckgo.com/*",
+        "https://www.bing.com/*",
+        "https://bing.com/*"
       ],
       "js": [
+        "scripts/shared.js",
         "scripts/content-script.js"
       ]
     }
