@@ -46,19 +46,23 @@ namespace Polemonium.Api.Web.Domain.Services
 
             WebsiteHostVote existingVote = await hostRepository.GetWebsiteHostVote(host, user.UserId);
 
-            if (existingVote != null)
+            if (existingVote != null && existingVote.Vote == (byte)vote)
             {
-                if (existingVote.Vote == (byte)vote) return;
-
+                await hostRepository.DeleteWebsiteHostVote(existingVote.Id);
+            }
+            else if (existingVote != null && existingVote.Vote == (byte)vote)
+            {
                 existingVote.Vote = (byte)vote;
                 await hostRepository.UpdateWebsiteHostVote(existingVote);
 
                 return;
             }
+            else
+            {
+                WebsiteHostVote hostVote = new WebsiteHostVote(user.UserId, websiteHost.Id, (byte)vote);
 
-            WebsiteHostVote hostVote = new WebsiteHostVote(user.UserId, websiteHost.Id, (byte)vote);
-
-            await hostRepository.CreateWebsiteHostVote(hostVote);
+                await hostRepository.CreateWebsiteHostVote(hostVote);
+            }
         }
 
         async Task<WebsiteHost> GetOrCreateWebsiteHost(string dnsName)

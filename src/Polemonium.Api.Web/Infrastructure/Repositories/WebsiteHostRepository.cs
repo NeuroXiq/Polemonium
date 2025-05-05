@@ -153,8 +153,10 @@ WHERE wh.dns_name = @dnsName
 ", new { dnsName, appUserId });
         }
 
-
-
+        public Task DeleteWebsiteHostVote(int id)
+        {
+            return Connection.ExecuteAsync("DELETE FROM website_host_vote WHERE id = @id", new { id });
+        }
 
         const string SQL_SelectWebsiteHost = "SELECT id as Id, dns_name as DnsName FROM website_host";
     }

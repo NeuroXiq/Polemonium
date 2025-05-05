@@ -17,5 +17,6 @@ namespace Polemonium.Api.Web.Domain.Repositories
         Task<VwWebsiteHostDetails> VwGetWebsiteHostDetailsByDnsName(string dnsName, int? appUserId);
         Task<WebsiteHostVote> GetWebsiteHostVote(string host, int userId);
         Task UpdateWebsiteHostVote(WebsiteHostVote existingVote);
+        Task DeleteWebsiteHostVote(int id);
     }
 }
