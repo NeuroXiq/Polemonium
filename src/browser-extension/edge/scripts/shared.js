@@ -42,19 +42,43 @@ function polemoniumExtensionSharedSetup() {
 
     var api = apiSetup();
 
-    function setHostsVotesCache(votes) {
+    async function addHostVotesToCache(votes) {
+        let lsName = 'polemonium_dns_votes_cache_v1';
+        let cacheString = localStorage.getItem(lsName);
+        let cacheObj = { };
+
+        if (cacheString) {
+            cacheObj = JSON.parse(cacheString);
+        }
+
+        if (Object.keys(cacheObj) > 10000) {
+            cacheObj = { };
+        }
+
+        votes.forEach(v => { cacheObj[v.dnsName] = v; });
+
+        localStorage.setItem(lsName, JSON.stringify(cacheObj));
+
         return Promise.resolve();
     }
 
-    function getHostsVotesCache(urls) {
-        return Promise.resolve([]);
+    async function getHostsVotesFromCache(dnsNames) {
+        let lsName = 'polemonium_dns_votes_cache_v1';
+        let cacheString = localStorage.getItem(lsName);
+        let cacheObj = { };
+
+        if (cacheString) {
+            cacheObj = JSON.parse(cacheString);
+        }
+
+        var result = [];
+
+        dnsNames.forEach(c => { cacheObj[c] && result.push(cacheObj[c]); });
+
+        return Promise.resolve(result);
     }
 
-    function getHostsVotesCache(hostsVotes) {
-        return Promise.resolve([]);
-    }
-
-    function getHostsVotesFetch(hosts) {
+    function getHostsVotesFromServer(hosts) {
         if (!hosts || hosts.length === 0) {
             return Promise.resolve([]);
         }
@@ -64,13 +88,13 @@ function polemoniumExtensionSharedSetup() {
         });
     }
 
-    function getHostsToMarkAsSpam(hosts) {
+    async function getHostsToMarkAsSpam(hosts) {
         var result = [];
 
         // indexedb locally set as spam
         // ... code
 
-        return getHostsVotesCache(hosts)
+        return getHostsVotesFromCache(hosts)
             .then(hostsFromCache => {
                 // get from cache or if not in cache get from server
 
@@ -78,12 +102,12 @@ function polemoniumExtensionSharedSetup() {
                     return hostsFromCache.every(d => d.host !== host);
                 });
 
-                var promiseFetchData = notInCacheHosts.length > 0 ? getHostsVotesFetch(notInCacheHosts) : Promise.resolve([]);
+                var promiseFetchData = notInCacheHosts.length > 0 ? getHostsVotesFromServer(notInCacheHosts) : Promise.resolve([]);
 
                 let resultPromise = promiseFetchData
                     .then(hostsFromServer => {
                         let result = [...hostsFromCache, ...hostsFromServer];
-                        return setHostsVotesCache(hostsFromServer).then(() => result);
+                        return addHostVotesToCache(hostsFromServer).then(() => result);
                     });
 
                 return resultPromise;
@@ -166,14 +190,36 @@ function polemoniumExtensionSharedSetup() {
     }
 
     function markSpamHosts() {
-        setTimeout(markSpamHosts, 2000);
         let host = window.location.host;
         if (host.startsWith('www.google.') || host.startsWith('google.')) {
             markGoogleSpamHosts();
         } else if (host.startsWith('www.bing.') || host.startsWith('bing.')) {
             markBingSpamHosts();
         } else if (host.startsWith('www.duckduckgo.') || host.startsWith('duckduckgo.')) {
+            // need to refresh because looks like SPA/dynamically reloads html
+            setTimeout(markSpamHosts, 2000);
             markDuckDuckGoSpamHosts();
+        }
+    }
+
+    async function setVote() {
+        let connRequest = indexedDB.open("MyTestDb", 1);
+
+        connRequest.onerror = (e) => console.log(e);
+        connRequest.onupgradeneeded = (e) => {
+            const db = e.target.result;
+
+            const localUserVoteStore = db.createObjectStore('dns_vote_local_user', );
+            const serverCacheStore = db.createObjectStore('dns_vote_server_cache');
+
+            console.log('onupgradeneeeded end');
+        };
+        
+        connRequest.onsuccess = (e) => {
+            let db = e.target.result;
+            const tx = db.transaction(["dns_name_server_cache"], 'readwrite');
+
+            console.log('onsuccess end');
         }
     }
 
@@ -185,6 +231,7 @@ function polemoniumExtensionSharedSetup() {
             }
         },
         api: api,
-        markSpamHosts: markSpamHosts
+        markSpamHosts: markSpamHosts,
+        setVote: setVote
     };
 }

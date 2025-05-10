@@ -5,7 +5,7 @@ function documentScript() {
     // debugger;
     console.log('staring processDocument');
 
-    shared.markSpamHosts();
+    setTimeout(() => shared.markSpamHosts(), 500);
 }
 
 documentScript();
