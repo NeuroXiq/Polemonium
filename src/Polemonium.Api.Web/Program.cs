@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using Polemonium.Api.Web.Application;
 using Polemonium.Api.Web.Common;
 using Polemonium.Api.Web.Domain.Repositories;
@@ -64,6 +66,11 @@ namespace Program
 
         private static void AddServices(WebApplicationBuilder builder)
         {
+#if DEBUG
+            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+            NpgsqlLoggingConfiguration.InitializeLogging(loggerFactory);
+#endif
+
             var poptions = new PolemoniumOptions();
             builder.Configuration.GetSection("Polemonium").Bind(poptions);
 

@@ -2,8 +2,8 @@
 {
     public class VwWebsiteHostVotes
     {
-        public string HostDnsName { get; set; }
-        public int VotesUp { get; set; }
-        public int VotesDown { get; set; }
+        public string DnsName { get; set; }
+        public int VoteUpCount { get; set; }
+        public int VoteDownCount { get; set; }
     }
 }

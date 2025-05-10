@@ -1,25 +1,20 @@
 window.Polemonium = window.Polemonium || {};
 window.Polemonium.state = window.Polemonium.state || {};
-window.Polemonium.Shared = PolemoniumExtensionSharedSetup();
+window.Polemonium.Shared = polemoniumExtensionSharedSetup();
 
 var getState = () => window.Polemonium.state;
 var api = window.Polemonium.Shared.api;
-var enums = window.Polemonium.Shared.Enums;
-
-function onTabUpdated() {
-    console.log('tab updated popup');
-}
-
-chrome.tabs.onUpdated.addListener(onTabUpdated);
+var enums = window.Polemonium.Shared.enums;
+var shared = window.Polemonium.Shared;
 
 function onOkClick() {
     let state = getState();
-    api.setVote(state.host, enums.voteType.up);
+    shared.setVote(state.host, enums.voteType.up);
 }
 
 function onSpamClick() {
     let state = getState();
-    api.setVote(state.host, enums.voteType.down);
+    shared.setVote(state.host, enums.voteType.down);
 }
 
 function setup(tab) {
@@ -53,3 +48,5 @@ document.querySelector('.btn-spam').addEventListener('click', onSpamClick);
 document.querySelector('.btn-ok').addEventListener('click', onOkClick);
 
 chrome.tabs.onUpdated.addListener(onTabUpdated);
+chrome.tabs.onActivated.addListener(onTabUpdated);
+onTabUpdated(null);

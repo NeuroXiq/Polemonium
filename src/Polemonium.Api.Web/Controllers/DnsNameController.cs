@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace Polemonium.Api.Web.Controllers
 {
-    public class HostController : PolemoniumController
+    public class DnsNameController : PolemoniumController
     {
         private ICurrentUser user;
         private IHostService hostService;
         private IWebsiteHostRepository websiteHostRepository;
 
-        public HostController(
+        public DnsNameController(
             IHostService hostService,
             IWebsiteHostRepository websiteHostRepository,
             ICurrentUser user)
@@ -88,7 +88,7 @@ namespace Polemonium.Api.Web.Controllers
         }
 
         [HttpGet, Route("votes")]
-        public IList<HostVoteDto> GetVotesStatus([FromQuery] string[] dnsName)
+        public async Task<IList<HostVoteDto>> GetVotesStatus([FromQuery] string[] dnsName)
         {
             if (dnsName == null || dnsName.Length == 0) return new List<HostVoteDto>();
             string[] validSites = dnsName
@@ -99,9 +99,14 @@ namespace Polemonium.Api.Web.Controllers
 
             if (validSites.Length == 0) return Array.Empty<HostVoteDto>();
 
-            var r = new Random();
+            var result = await websiteHostRepository.GetVotesCounts(dnsName);
 
-            return dnsName.Select(t => new HostVoteDto { DnsName = t, VoteDownCount = r.Next(100), VoteUpCount = r.Next(100) }).ToList();
+            return result.Select(t => new HostVoteDto
+            {
+                DnsName = t.DnsName,
+                VoteUpCount = t.VoteUpCount,
+                VoteDownCount = t.VoteDownCount
+            }).ToList();
         }
     }
 }

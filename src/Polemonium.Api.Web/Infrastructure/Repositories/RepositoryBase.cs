@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using Polemonium.Api.Web.Infrastructure.Shared;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Polemonium.Api.Web.Infrastructure.Repositories
         {
             this.infrastructure = infrastructure;
             Connection = new NpgsqlConnection(infrastructure.ConnectionString);
+            
         }
     }
 }

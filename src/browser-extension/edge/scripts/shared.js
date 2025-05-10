@@ -35,8 +35,8 @@ function polemoniumExtensionSharedSetup() {
         }
 
         return {
-            hostVotes: (dnsNames) => get('/host/votes', new URLSearchParams(dnsNames.map(h => ['dnsName', h])).toString()),
-            setVote: (dnsName, vote) => put('/host/set-vote', { dnsName: dnsName, vote: vote })
+            hostVotes: (dnsNames) => get('/dnsname/votes', new URLSearchParams(dnsNames.map(h => ['dnsName', h])).toString()),
+            setVote: (dnsName, vote) => put('/dnsname/set-vote', { dnsName: dnsName, vote: vote })
         };
     }
 
@@ -202,25 +202,15 @@ function polemoniumExtensionSharedSetup() {
         }
     }
 
-    async function setVote() {
-        let connRequest = indexedDB.open("MyTestDb", 1);
+    async function setVote(dnsName, vote) {
+        api.setVote(dnsName, vote);
 
-        connRequest.onerror = (e) => console.log(e);
-        connRequest.onupgradeneeded = (e) => {
-            const db = e.target.result;
+        let lsLocalVotesName = 'polemonium_local_usr_votes_v1';
+        let obj = JSON.parse(localStorage.getItem(lsLocalVotesName) || "{ }");
 
-            const localUserVoteStore = db.createObjectStore('dns_vote_local_user', );
-            const serverCacheStore = db.createObjectStore('dns_vote_server_cache');
+        obj[dnsName] = { dnsName: dnsName, vote: vote };
 
-            console.log('onupgradeneeeded end');
-        };
-        
-        connRequest.onsuccess = (e) => {
-            let db = e.target.result;
-            const tx = db.transaction(["dns_name_server_cache"], 'readwrite');
-
-            console.log('onsuccess end');
-        }
+        localStorage.setItem(lsLocalVotesName, JSON.stringify(obj));
     }
 
     return {
@@ -230,7 +220,7 @@ function polemoniumExtensionSharedSetup() {
                 down: 2
             }
         },
-        api: api,
+        // api: api,
         markSpamHosts: markSpamHosts,
         setVote: setVote
     };

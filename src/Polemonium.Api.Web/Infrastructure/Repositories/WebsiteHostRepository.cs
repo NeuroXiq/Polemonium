@@ -48,10 +48,17 @@ OFFSET @offset
                 new { dnsName });
         }
 
-        public async Task<VwWebsiteHostVotes> GetVotesCounts(string hosts)
+        public Task<IEnumerable<VwWebsiteHostVotes>> GetVotesCounts(string[] dnsNames)
         {
-            throw new Exception();
-            // throw new NotImplementedException();
+            return Connection.QueryAsync<VwWebsiteHostVotes>(@"
+SELECT
+COUNT(whv.vote) FILTER (WHERE whv.vote = 1::char(1)) as VoteUpCount,
+COUNT(whv.vote) FILTER (WHERE whv.vote = 2::char(1)) as VoteDownCount,
+wh.dns_name as DnsName
+FROM website_host_vote whv
+JOIN website_host wh on wh.id = whv.id
+WHERE wh.dns_name = ANY (@dnsNames)
+GROUP BY wh.dns_name", new { dnsNames });
         }
 
         public async Task CreateWebsiteHost(WebsiteHost host)

@@ -13,7 +13,7 @@ namespace Polemonium.Api.Web.Domain.Repositories
         Task<WebsiteHost> GetByDnsName(string dnsName);
         Task<WebsiteHost> GetByIdAsync(int websiteHostId);
         Task<IList<WebsiteHostComment>> GetWebsiteHostCommentsByDnsName(string dnsName, int skip, int take);
-        Task<VwWebsiteHostVotes> GetVotesCounts(string hosts);
+        Task<IEnumerable<VwWebsiteHostVotes>> GetVotesCounts(string[] dnsNames);
         Task<VwWebsiteHostDetails> VwGetWebsiteHostDetailsByDnsName(string dnsName, int? appUserId);
         Task<WebsiteHostVote> GetWebsiteHostVote(string host, int userId);
         Task UpdateWebsiteHostVote(WebsiteHostVote existingVote);
